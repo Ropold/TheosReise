@@ -21,11 +21,11 @@ public class LessonService {
     public LessonModel addLesson(LessonModel lessonModel) {
         LessonModel newLessonModel = new LessonModel(
                 idService.generateRandomId(),
+                true,
                 lessonModel.count(),
                 lessonModel.title(),
                 lessonModel.description(),
                 lessonModel.category(),
-                lessonModel.isActive(),
                 lessonModel.imageUrl()
         );
         return lessonRepository.save(newLessonModel);

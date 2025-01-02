@@ -5,7 +5,6 @@ public record LessonModelDto(
         String title,
         String description,
         Category category,
-        boolean isActive,
         String imageUrl
 ) {
 }

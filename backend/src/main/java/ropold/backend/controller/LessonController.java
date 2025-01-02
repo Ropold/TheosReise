@@ -1,12 +1,8 @@
 package ropold.backend.controller;
 
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ropold.backend.model.LessonModel;
 import ropold.backend.service.LessonService;
 
@@ -25,10 +21,19 @@ public class LessonController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @GetMapping
-    public LessonModel addLesson(LessonModel lessonModel) {
-        return lessonService.addLesson(lessonModel);
+    @PostMapping
+    public LessonModel addLesson(@RequestBody LessonModel lessonModel) {
+        return lessonService.addLesson(
+                new LessonModel(
+                        null,
+                        true,
+                        lessonModel.count(),
+                        lessonModel.title(),
+                        lessonModel.description(),
+                        lessonModel.category(),
+                        lessonModel.imageUrl()
+                )
+        );
     }
-
 
 }
