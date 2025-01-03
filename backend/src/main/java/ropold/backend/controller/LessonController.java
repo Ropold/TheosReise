@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ropold.backend.model.LessonModel;
+import ropold.backend.model.LessonModelDto;
 import ropold.backend.service.LessonService;
 
 import java.util.List;
@@ -22,31 +23,32 @@ public class LessonController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public LessonModel addLesson(@RequestBody LessonModel lessonModel) {
+    public LessonModel addLesson(@RequestBody LessonModelDto lessonModelDto) {
         return lessonService.addLesson(
                 new LessonModel(
                         null,
                         true,
-                        lessonModel.count(),
-                        lessonModel.title(),
-                        lessonModel.description(),
-                        lessonModel.category(),
-                        lessonModel.imageUrl()
+                        lessonModelDto.count(),
+                        lessonModelDto.title(),
+                        lessonModelDto.description(),
+                        lessonModelDto.category(),
+                        lessonModelDto.imageUrl()
                 )
         );
     }
 
+
     @PutMapping("/{id}")
-    public LessonModel putLesson(@PathVariable String id, @RequestBody LessonModel lessonModel){
+    public LessonModel putLesson(@PathVariable String id, @RequestBody LessonModelDto lessonModelDto){
         return lessonService.updateLessonWithPut(id,
                 new LessonModel(
                         id,
-                        lessonModel.isActive(),
-                        lessonModel.count(),
-                        lessonModel.title(),
-                        lessonModel.description(),
-                        lessonModel.category(),
-                        lessonModel.imageUrl()
+                        true,
+                        lessonModelDto.count(),
+                        lessonModelDto.title(),
+                        lessonModelDto.description(),
+                        lessonModelDto.category(),
+                        lessonModelDto.imageUrl()
                 ));
     }
 
