@@ -6,6 +6,7 @@ import ropold.backend.model.LessonModel;
 import ropold.backend.repository.LessonRepository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -31,4 +32,24 @@ public class LessonService {
         return lessonRepository.save(newLessonModel);
     }
 
+    public LessonModel updateLessonWithPut(String id, LessonModel lessonModel) {
+        if(lessonRepository.existsById(id)){
+            LessonModel newLessonModel = new LessonModel(
+                    id,
+                    lessonModel.isActive(),
+                    lessonModel.count(),
+                    lessonModel.title(),
+                    lessonModel.description(),
+                    lessonModel.category(),
+                    lessonModel.imageUrl()
+            );
+            return lessonRepository.save(newLessonModel);
+        } else {
+            throw new NoSuchElementException("No Lesson found with the Put-Id:"+id);
+        }
+    }
+
+    public void deleteLesson(String id) {
+        lessonRepository.deleteById(id);
+    }
 }

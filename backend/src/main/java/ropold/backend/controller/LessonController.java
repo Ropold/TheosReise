@@ -36,4 +36,23 @@ public class LessonController {
         );
     }
 
+    @PutMapping("/{id}")
+    public LessonModel putLesson(@PathVariable String id, @RequestBody LessonModel lessonModel){
+        return lessonService.updateLessonWithPut(id,
+                new LessonModel(
+                        id,
+                        lessonModel.isActive(),
+                        lessonModel.count(),
+                        lessonModel.title(),
+                        lessonModel.description(),
+                        lessonModel.category(),
+                        lessonModel.imageUrl()
+                ));
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteLesson(@PathVariable String id){
+        lessonService.deleteLesson(id);
+    }
+
 }
