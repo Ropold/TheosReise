@@ -38,6 +38,18 @@ class LessonServiceTests {
     }
 
     @Test
+    void getLessonById() {
+        // Given
+        when(lessonRepository.findById("1")).thenReturn(java.util.Optional.of(lessonModel1));
+
+        // When
+        LessonModel expected = lessonService.getLessonById("1");
+
+        // Then
+        assertEquals(expected, lessonModel1);
+    }
+
+    @Test
     void addLesson() {
         // Given
         LessonModel lessonModel3 = new LessonModel("3", true, 3, "Testlesson3", "test description3", Category.ADVANCED, "testImageUrl3");
@@ -60,6 +72,30 @@ class LessonServiceTests {
         assertEquals(lessonModel3.category(), expected.category());
         assertEquals(lessonModel3.imageUrl(), expected.imageUrl());
 
+    }
+
+    @Test
+    void updateLessonWithPut() {
+        // Given
+        LessonModel lessonModel4 = new LessonModel("4", true, 4, "Testlesson4", "test description4", Category.ADVANCED, "testImageUrl4");
+
+        LessonModel newLesson = new LessonModel("4", true, 4, "Testlesson4", "test description4", Category.ADVANCED, "testImageUrl4");
+
+        when(lessonRepository.existsById("4")).thenReturn(true);
+        when(lessonRepository.save(any(LessonModel.class))).thenReturn(newLesson);
+
+        // When
+        LessonModel expected = lessonService.updateLessonWithPut("4", lessonModel4);
+
+        // Then
+        assertEquals(newLesson, expected);
+        assertEquals(lessonModel4.id(), expected.id());
+        assertEquals(lessonModel4.isActive(), expected.isActive());
+        assertEquals(lessonModel4.count(), expected.count());
+        assertEquals(lessonModel4.title(), expected.title());
+        assertEquals(lessonModel4.description(), expected.description());
+        assertEquals(lessonModel4.category(), expected.category());
+        assertEquals(lessonModel4.imageUrl(), expected.imageUrl());
     }
 
 }
