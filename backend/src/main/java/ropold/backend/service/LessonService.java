@@ -19,6 +19,10 @@ public class LessonService {
         return lessonRepository.findAll();
     }
 
+    public LessonModel getLessonById(String id) {
+        return lessonRepository.findById(id).orElseThrow(() -> new NoSuchElementException("No Lesson found with Id: " + id));
+    }
+
     public LessonModel addLesson(LessonModel lessonModel) {
         LessonModel newLessonModel = new LessonModel(
                 idService.generateRandomId(),
@@ -52,4 +56,6 @@ public class LessonService {
     public void deleteLesson(String id) {
         lessonRepository.deleteById(id);
     }
+
+
 }

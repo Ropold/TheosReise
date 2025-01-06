@@ -21,6 +21,11 @@ public class LessonController {
         return lessonService.getAllLessons();
     }
 
+    @GetMapping("/{id}")
+    public LessonModel getLessonById(@PathVariable String id) {
+        return lessonService.getLessonById(id);
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public LessonModel addLesson(@RequestBody LessonModelDto lessonModelDto) {
