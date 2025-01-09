@@ -10,8 +10,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class LessonServiceTests {
@@ -96,6 +95,20 @@ class LessonServiceTests {
         assertEquals(lessonModel4.description(), expected.description());
         assertEquals(lessonModel4.category(), expected.category());
         assertEquals(lessonModel4.imageUrl(), expected.imageUrl());
+    }
+
+    @Test
+    void deleteLesson() {
+        // Given
+        String id = "1";
+
+        // When
+        lessonService.deleteLesson(id);
+
+        // Then
+        verify(lessonRepository, times(1)).deleteById("1");
+        verifyNoMoreInteractions(lessonRepository);
+
     }
 
 }
