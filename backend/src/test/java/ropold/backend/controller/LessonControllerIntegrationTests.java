@@ -66,5 +66,56 @@ class LessonControllerIntegrationTests {
             """));
     }
 
+    @Test
+    void getLessonById_returnLessonWithId1_whenLessonWithId1Saved() throws Exception {
+        // WHEN
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/api/lesson/1")
+                )
+                // THEN
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json("""
+                {
+                    "id": "1",
+                    "isActive": true,
+                    "count": 1,
+                    "title": "Testlesson",
+                    "description": "test description",
+                    "category": "BEGINNER",
+                    "imageUrl": "testImageUrl"
+                }
+            """));
+    }
+
+    @Test
+    void postLesson_expectLessonWithValidId_whenLessonSaved() throws Exception {
+        // GIVEN
+        lessonRepository.deleteAll();
+
+        // WHEN
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/api/lesson")
+                                .contentType("application/json")
+                                .content("""
+                            {
+                                "count": 2,
+                                "title": "Testlesson2",
+                                "description": "test description2",
+                                "category": "BEGINNER",
+                                "imageUrl": "testImageUrl2"
+                            }
+                        """)
+                )
+                // THEN
+                .andExpect(status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty()) // Überprüft, dass `id` existiert
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isActive").value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.count").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Testlesson2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("test description2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("BEGINNER"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.imageUrl").value("testImageUrl2"));
+    }
+
 
 }
