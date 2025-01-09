@@ -117,5 +117,41 @@ class LessonControllerIntegrationTests {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.imageUrl").value("testImageUrl2"));
     }
 
+    @Test
+    void putLesson_expectUpdatedLesson_whenLessonExists() throws Exception {
+        // WHEN
+        mockMvc.perform(
+                        MockMvcRequestBuilders.put("/api/lesson/1")
+                                .contentType("application/json")
+                                .content("""
+                            {
+                                "count": 2,
+                                "title": "Testlesson2",
+                                "description": "test description2",
+                                "category": "BEGINNER",
+                                "imageUrl": "testImageUrl2"
+                            }
+                        """)
+                )
+                // THEN
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isActive").value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.count").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Testlesson2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("test description2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.category").value("BEGINNER"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.imageUrl").value("testImageUrl2"));
+    }
+
+    @Test
+    void deleteLesson_expectNoContent_whenLessonExists() throws Exception {
+        // WHEN
+        mockMvc.perform(
+                        MockMvcRequestBuilders.delete("/api/lesson/1")
+                )
+                // THEN
+                .andExpect(status().isNoContent());
+    }
 
 }

@@ -58,6 +58,7 @@ public class LessonController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteLesson(@PathVariable String id){
         lessonService.deleteLesson(id);
     }
