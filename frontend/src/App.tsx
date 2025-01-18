@@ -12,10 +12,12 @@ export default function App() {
 
     const [lessons, setLessons] = useState<LessonModel[]>([]);
 
+
     const getAllLessons = () => {
         axios
-            .get("/api/lessons")
+            .get("/api/lesson")
             .then((response) => {
+                console.log(response.data);
                 setLessons(response.data);
             })
             .catch((error) => {
@@ -25,7 +27,7 @@ export default function App() {
 
     useEffect(() => {
         getAllLessons();
-    }, [lessons]);
+    }, []);
 
     return (
         <>
