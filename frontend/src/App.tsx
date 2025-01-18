@@ -6,12 +6,11 @@ import { Routes, Route } from "react-router-dom";
 import Lesson from "./components/Lesson.tsx";
 import {useEffect, useState} from "react";
 import axios from "axios";
-import {LessonModel} from "./model/LessonModel.ts";
+import {LessonModel} from "./components/model/LessonModel.ts";
 
 export default function App() {
 
     const [lessons, setLessons] = useState<LessonModel[]>([]);
-
 
     const getAllLessons = () => {
         axios
