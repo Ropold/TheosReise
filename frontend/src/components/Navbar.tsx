@@ -5,7 +5,7 @@ export default function Navbar() {
             <div className="clickable-header">
                 <button>Home</button>
                 <button>search</button>
-                <button>login with Github</button>
+                <button>login</button>
                 <button>logout</button>
             </div>
 

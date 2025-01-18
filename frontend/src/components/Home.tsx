@@ -1,5 +1,10 @@
+import {LessonModel} from '../model/LessonModel.ts';
 
-export default function Home() {
+type HomeProps = {
+    lessons: LessonModel[];
+}
+
+export default function Home(props: Readonly<HomeProps>) {
     return (
         <div>
             <h2>Home</h2>
