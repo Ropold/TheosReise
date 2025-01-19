@@ -1,16 +1,16 @@
 import { LessonModel } from './model/LessonModel.ts';
+import { useEffect, useState } from "react";
+import SearchBar from "./SearchBar.tsx";
 import LessonCard from "./LessonCard.tsx";
-import {useEffect, useState} from "react";
 
 type HomeProps = {
     lessons: LessonModel[];
     showSearch: boolean;
     currentPage: number;
     paginate: (pageNumber: number) => void;
-}
+};
 
 export default function Home(props: Readonly<HomeProps>) {
-
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [filteredLessons, setFilteredLessons] = useState<LessonModel[]>([]);
     const [filterType, setFilterType] = useState<"title" | "category" | "all">("title");
@@ -22,6 +22,11 @@ export default function Home(props: Readonly<HomeProps>) {
             setSearchQuery("");
         }
     }, [props.showSearch]);
+
+    useEffect(() => {
+        const filtered = filterLessons(props.lessons, searchQuery, filterType, selectedCategory);
+        setFilteredLessons(filtered);
+    }, [props.lessons, searchQuery, filterType, selectedCategory]);
 
     const filterLessons = (lessons: LessonModel[], query: string, filterType: string, category: string | "") => {
         const lowerQuery = query.toLowerCase();
@@ -38,19 +43,48 @@ export default function Home(props: Readonly<HomeProps>) {
         });
     };
 
-    useEffect(() => {
-        const filtered = filterLessons(props.lessons, searchQuery, filterType, selectedCategory);
-        setFilteredLessons(filtered);
-    }, [props.lessons, searchQuery, filterType, selectedCategory]);
+    const getPaginationData = (lessons: LessonModel[]) => {
+        const indexOfLastLesson = props.currentPage * lessonsPerPage;
+        const indexOfFirstLesson = indexOfLastLesson - lessonsPerPage;
+        const currentLessons = lessons.slice(indexOfFirstLesson, indexOfLastLesson);
+        const totalPages = Math.ceil(lessons.length / lessonsPerPage);
+        return { currentLessons, totalPages };
+    };
+
+    const { currentLessons, totalPages } = getPaginationData(filteredLessons);
 
     return (
-        <div>
-            <h2>Theos Reise</h2>
+        <>
+            {props.showSearch && (
+                <SearchBar
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    lessons={props.lessons}
+                    setFilteredLessons={setFilteredLessons}
+                    filterType={filterType}
+                    setFilterType={setFilterType}
+                    selectedCategory={selectedCategory}
+                    setSelectedCategory={setSelectedCategory}
+                />
+            )}
+
             <div className="lesson-card-container">
-                {props.lessons.map((lesson) => (
+                {currentLessons.map((lesson) => (
                     <LessonCard key={lesson.id} lesson={lesson} />
                 ))}
             </div>
-        </div>
+
+            <div className="button-group">
+                {Array.from({ length: totalPages }, (_, index) => (
+                    <button
+                        key={index + 1}
+                        onClick={() => props.paginate(index + 1)}
+                        className={index + 1 === props.currentPage ? "active" : ""}
+                    >
+                        {index + 1}
+                    </button>
+                ))}
+            </div>
+        </>
     );
 }
