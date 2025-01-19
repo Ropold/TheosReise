@@ -1,14 +1,12 @@
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
-import {LessonModel} from "./model/LessonModel.ts";
+import { useNavigate } from "react-router-dom";
 
 type NavbarProps = {
-    getAllLessons: LessonModel[],
+    getAllLessons: () => void;
     showSearch: boolean;
-    currentPage: number;
-    toggleSearchBar: boolean;
-}
-
+    resetCurrentPage: () => void;
+    toggleSearchBar: () => void;
+};
 
 export default function Navbar(props: Readonly<NavbarProps>) {
     const navigate = useNavigate();
@@ -33,13 +31,19 @@ export default function Navbar(props: Readonly<NavbarProps>) {
     return (
         <div className="navbar">
             <div className="clickable-header">
-                <button onClick={()=>{navigate("/")}}>Home</button>
-                <button>search</button>
-                <button onClick={loginWithGithub}>login with github</button>
-                <button onClick={logoutFromGithub}>logout</button>
+                <button onClick={() => navigate("/")}>Home</button>
+                <button
+                    onClick={() => {
+                        props.toggleSearchBar();
+                        navigate("/");
+                    }}
+                    className={props.showSearch ? "toggle-search-on" : "toggle-search-off"}
+                >
+                    {props.showSearch ? "Hide Search" : "Search"}
+                </button>
+                <button onClick={loginWithGithub}>Login with GitHub</button>
+                <button onClick={logoutFromGithub}>Logout</button>
             </div>
-
         </div>
-
-    )
+    );
 }

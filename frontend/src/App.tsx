@@ -28,7 +28,6 @@ export default function App() {
         axios
             .get("/api/lesson")
             .then((response) => {
-                console.log(response.data);
                 setLessons(response.data);
             })
             .catch((error) => {

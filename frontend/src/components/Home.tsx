@@ -4,6 +4,9 @@ import {useEffect, useState} from "react";
 
 type HomeProps = {
     lessons: LessonModel[];
+    showSearch: boolean;
+    currentPage: number;
+    paginate: (pageNumber: number) => void;
 }
 
 export default function Home(props: Readonly<HomeProps>) {
