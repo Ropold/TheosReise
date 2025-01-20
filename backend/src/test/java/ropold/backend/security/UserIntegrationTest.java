@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,6 +32,14 @@ class UserIntegrationTest {
         mockMvc.perform(get("/api/users/me"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("anonymousUser"));
+    }
+
+
+    @Test
+    void testGetUserDetails_withoutLoggedInUser_expectUserNotAuthenticated() throws Exception {
+        mockMvc.perform(get("/api/users/me/details"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("{\"message\":\"User not authenticated\"}"));
     }
 
 }

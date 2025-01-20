@@ -11,6 +11,7 @@ import NotFound from "./components/NotFound.tsx";
 import Profile from "./components/Profile.tsx";
 import AddLesson from "./components/AddLesson.tsx";
 import MyLessons from "./components/MyLessons.tsx";
+import ProtectedRoute from "./components/ProtectedRoute.tsx";
 
 export default function App() {
 
@@ -97,9 +98,11 @@ export default function App() {
                     paginate={setCurrentPage}
                 />}/>
                 <Route path="/lesson/:id" element={<Lesson />} />
-                <Route path="/add-lesson" element={<AddLesson user={user} />} />
-                <Route path="/my-lessons" element={<MyLessons user={user} />} />
-                <Route path="/profile" element={<Profile userDetails={userDetails} />} />
+                <Route element={<ProtectedRoute user={user}/>}>
+                    <Route path="/add-lesson" element={<AddLesson user={user} />} />
+                    <Route path="/my-lessons" element={<MyLessons user={user} />} />
+                    <Route path="/profile" element={<Profile userDetails={userDetails} />} />
+                </Route>
             </Routes>
             <Footer />
         </>
