@@ -2,6 +2,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 type NavbarProps = {
+    user: string;
+    getUser: () => void;
     getAllLessons: () => void;
     showSearch: boolean;
     resetCurrentPage: () => void;
@@ -20,7 +22,7 @@ export default function Navbar(props: Readonly<NavbarProps>) {
         axios
             .post("/api/users/logout")
             .then(() => {
-                //props.getUser();
+                props.getUser();
                 navigate("/");
             })
             .catch((error) => {

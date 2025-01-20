@@ -22,15 +22,20 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+
                 .authorizeHttpRequests(a -> a
                         .requestMatchers("/api/auth/me").authenticated()
                         .requestMatchers("/api/secured").authenticated()
                         .anyRequest().permitAll()
                 )
+                .logout(l -> l.logoutUrl("/api/users/logout")
+                        .logoutSuccessHandler((request, response, authentication) -> response.setStatus(200)))
+
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .exceptionHandling(e -> e
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .oauth2Login(o -> o.defaultSuccessUrl(appUrl));
+
         return http.build();
     }
 }
