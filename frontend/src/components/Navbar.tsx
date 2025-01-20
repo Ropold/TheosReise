@@ -2,6 +2,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 type NavbarProps = {
+    user: string;
+    getUser: () => void;
     getAllLessons: () => void;
     showSearch: boolean;
     resetCurrentPage: () => void;
@@ -20,7 +22,7 @@ export default function Navbar(props: Readonly<NavbarProps>) {
         axios
             .post("/api/users/logout")
             .then(() => {
-                //props.getUser();
+                props.getUser();
                 navigate("/");
             })
             .catch((error) => {
@@ -41,8 +43,25 @@ export default function Navbar(props: Readonly<NavbarProps>) {
                 >
                     {props.showSearch ? "Hide Search" : "Search"}
                 </button>
-                <button onClick={loginWithGithub}>Login with GitHub</button>
-                <button onClick={logoutFromGithub}>Logout</button>
+
+                {props.user !== "anonymousUser" ? (
+                    <>
+                        <button onClick={() => navigate(`/add-lesson`)}>Add Room</button>
+                        <button
+                            onClick={() => {
+                                props.getAllLessons();
+                                navigate(`/my-lessons`);
+                            }}
+                        >
+                            My Lessons
+                        </button>
+                        <button onClick={() => navigate(`/profile`)}>Profile</button>
+                        <button onClick={logoutFromGithub}>Logout</button>
+                    </>
+                ) : (
+                    <button onClick={loginWithGithub}>Login with GitHub</button>
+                )}
+
             </div>
         </div>
     );
