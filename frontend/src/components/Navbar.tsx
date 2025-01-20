@@ -43,8 +43,25 @@ export default function Navbar(props: Readonly<NavbarProps>) {
                 >
                     {props.showSearch ? "Hide Search" : "Search"}
                 </button>
-                <button onClick={loginWithGithub}>Login with GitHub</button>
-                <button onClick={logoutFromGithub}>Logout</button>
+
+                {props.user !== "anonymousUser" ? (
+                    <>
+                        <button onClick={() => navigate(`/add-lesson`)}>Add Room</button>
+                        <button
+                            onClick={() => {
+                                props.getAllLessons();
+                                navigate(`/my-lessons`);
+                            }}
+                        >
+                            My Lessons
+                        </button>
+                        <button onClick={() => navigate(`/profile`)}>Profile</button>
+                        <button onClick={logoutFromGithub}>Logout</button>
+                    </>
+                ) : (
+                    <button onClick={loginWithGithub}>Login with GitHub</button>
+                )}
+
             </div>
         </div>
     );
