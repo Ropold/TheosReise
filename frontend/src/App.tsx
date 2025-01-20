@@ -7,6 +7,7 @@ import Lesson from "./components/Lesson.tsx";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {LessonModel} from "./components/model/LessonModel.ts";
+import NotFound from "./components/NotFound.tsx";
 
 export default function App() {
 
@@ -52,7 +53,7 @@ export default function App() {
                 toggleSearchBar={toggleSearchBar}
             />
             <Routes>
-                <Route path="*" element={<h1>Not Found</h1>} />
+                <Route path="*" element={<NotFound />} />
                 <Route path="/" element={<Home
                     lessons={lessons}
                     showSearch={showSearch}
