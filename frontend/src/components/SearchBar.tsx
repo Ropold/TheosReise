@@ -86,7 +86,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
                     >
                         <option value="">Filter by a category</option>
                         <option value="BEGINNER">Anfänger</option>
-                        <option value="INTERMEDIATE">Fortgeschrittener Anfänger</option>
+                        <option value="INTERMEDIATE">Mittelstufe</option>
                         <option value="ADVANCED">Fortgeschritten</option>
                     </select>
                 </label>
