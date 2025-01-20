@@ -1,35 +1,67 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import './App.css';
+import Navbar from "./components/Navbar.tsx";
+import Home from "./components/Home.tsx";
+import Footer from "./components/Footer.tsx";
+import {Routes, Route, useLocation} from "react-router-dom";
+import Lesson from "./components/Lesson.tsx";
+import {useEffect, useState} from "react";
+import axios from "axios";
+import {LessonModel} from "./components/model/LessonModel.ts";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>TheosReise</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    const [lessons, setLessons] = useState<LessonModel[]>([]);
+    const [showSearch, setShowSearch] = useState<boolean>(false);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+
+    const location = useLocation();
+
+    const resetCurrentPage = () => {
+        setCurrentPage(1);
+    };
+
+    const toggleSearchBar = () => {
+        setShowSearch((prevState) => !prevState);
+    };
+
+    const getAllLessons = () => {
+        axios
+            .get("/api/lesson")
+            .then((response) => {
+                setLessons(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+    useEffect(() => {
+        getAllLessons();
+    }, []);
+
+    useEffect(() => {
+        window.scroll(0, 0);
+    }, [location]);
+
+    return (
+        <>
+            <Navbar
+                getAllLessons={getAllLessons}
+                showSearch={showSearch}
+                resetCurrentPage={resetCurrentPage}
+                toggleSearchBar={toggleSearchBar}
+            />
+            <Routes>
+                <Route path="*" element={<h1>Not Found</h1>} />
+                <Route path="/" element={<Home
+                    lessons={lessons}
+                    showSearch={showSearch}
+                    currentPage={currentPage}
+                    paginate={setCurrentPage}
+                />}/>
+                <Route path="/lesson/:id" element={<Lesson />} />
+            </Routes>
+            <Footer />
+        </>
+    );
 }
-
-export default App
