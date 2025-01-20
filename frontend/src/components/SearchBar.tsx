@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useEffect } from "react";
 import { LessonModel } from "./model/LessonModel.ts";
+import "./styles/SearchBar.css";
 
 type SearchBarProps = {
     value: string;
