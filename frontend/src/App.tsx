@@ -79,6 +79,11 @@ export default function App() {
         window.scroll(0, 0);
     }, [location]);
 
+    const handleNewLessonSubmit = (newLesson: LessonModel) => {
+        setLessons((prevLessons) => [...prevLessons, newLesson]);
+    }
+
+
     return (
         <>
             <Navbar
@@ -99,7 +104,7 @@ export default function App() {
                 />}/>
                 <Route path="/lesson/:id" element={<Lesson />} />
                 <Route element={<ProtectedRoute user={user}/>}>
-                    <Route path="/add-lesson" element={<AddLesson user={user} />} />
+                    <Route path="/add-lesson" element={<AddLesson user={user} handleSubmit={handleNewLessonSubmit} userDetails={userDetails}/>} />
                     <Route path="/my-lessons" element={<MyLessons user={user} />} />
                     <Route path="/profile" element={<Profile userDetails={userDetails} />} />
                 </Route>
