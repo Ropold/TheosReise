@@ -1,3 +1,4 @@
+import "./styles/Profile.css"
 
 type UserDetailsProps={
     userDetails: any;
