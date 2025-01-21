@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "./styles/BarButtons.css"
 
 type NavbarProps = {
     user: string;
@@ -31,38 +32,45 @@ export default function Navbar(props: Readonly<NavbarProps>) {
     }
 
     return (
-        <div className="navbar">
-            <div className="clickable-header">
-                <button onClick={() => navigate("/")}>Home</button>
-                <button
-                    onClick={() => {
-                        props.toggleSearchBar();
-                        navigate("/");
-                    }}
-                    className={props.showSearch ? "toggle-search-on" : "toggle-search-off"}
-                >
-                    {props.showSearch ? "Hide Search" : "Search"}
-                </button>
-
-                {props.user !== "anonymousUser" ? (
-                    <>
-                        <button onClick={() => navigate(`/add-lesson`)}>Add Room</button>
-                        <button
-                            onClick={() => {
-                                props.getAllLessons();
-                                navigate(`/my-lessons`);
-                            }}
-                        >
-                            My Lessons
-                        </button>
-                        <button onClick={() => navigate(`/profile`)}>Profile</button>
-                        <button onClick={logoutFromGithub}>Logout</button>
-                    </>
-                ) : (
-                    <button onClick={loginWithGithub}>Login with GitHub</button>
-                )}
-
+        <nav className="navbar">
+            <div
+                className="clickable-header"
+                onClick={() => {
+                    props.getAllLessons();
+                    props.resetCurrentPage();
+                    navigate("/");
+                }}>
+                <h2 className="header-title">TheosReise</h2>
+                <img src="/TheosReise.png" alt="TheosReise Logo" className="logo-image"/>
             </div>
-        </div>
+            <button
+                onClick={() => {
+                    props.toggleSearchBar();
+                    navigate("/");
+                }}
+                className={props.showSearch ? "toggle-search-on" : "toggle-search-off"}
+            >
+                {props.showSearch ? "Hide Search" : "Search"}
+            </button>
+
+            {props.user !== "anonymousUser" ? (
+                <>
+                    <button onClick={() => navigate(`/add-lesson`)}>Add Lesson</button>
+                    <button
+                        onClick={() => {
+                            props.getAllLessons();
+                            navigate(`/my-lessons`);
+                        }}
+                    >
+                        My Lessons
+                    </button>
+                    <button onClick={() => navigate(`/profile`)}>Profile</button>
+                    <button onClick={logoutFromGithub}>Logout</button>
+                </>
+            ) : (
+                <button onClick={loginWithGithub}>Login with GitHub</button>
+            )}
+
+        </nav>
     );
 }
