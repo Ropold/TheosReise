@@ -3,11 +3,8 @@ package ropold.backend.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ropold.backend.exception.AccessDeniedException;
 import ropold.backend.model.LessonModel;
 import ropold.backend.model.LessonModelDto;
 import ropold.backend.service.CloudinaryService;
@@ -45,7 +42,6 @@ public class LessonController {
             @RequestPart("lessonModelDto") @Valid LessonModelDto lessonModelDto,
             @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
 
-
         String imageUrl = null;
         if (image != null && !image.isEmpty()) {
             imageUrl = cloudinaryService.uploadImage(image);
@@ -64,19 +60,39 @@ public class LessonController {
         );
     }
 
-
     @PutMapping("/{id}")
-    public LessonModel putLesson(@PathVariable String id, @RequestBody LessonModelDto lessonModelDto){
-        return lessonService.updateLessonWithPut(id,
-                new LessonModel(
-                        id,
-                        true,
-                        lessonModelDto.count(),
-                        lessonModelDto.title(),
-                        lessonModelDto.description(),
-                        lessonModelDto.category(),
-                        lessonModelDto.imageUrl()
-                ));
+    public LessonModel putRoom(@PathVariable String id,
+                             @RequestPart("roomModelDto") LessonModelDto lessonModelDto,
+                             @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+
+        LessonModel existingRoom = lessonService.getLessonById(id);
+
+        String newImageUrl;
+        if (image != null && !image.isEmpty()) {
+            if (existingRoom.imageUrl() != null) {
+                cloudinaryService.deleteImage(existingRoom.imageUrl());
+            }
+            newImageUrl = cloudinaryService.uploadImage(image);
+        } else {
+            newImageUrl = existingRoom.imageUrl();
+        }
+
+        LessonModel updatedLesson = new LessonModel(
+                id,
+                existingRoom.isActive(),
+                lessonModelDto.count(),
+                lessonModelDto.title(),
+                lessonModelDto.description(),
+                lessonModelDto.category(),
+                newImageUrl
+        );
+
+        return lessonService.updateLessonWithPut(id, updatedLesson);
+    }
+
+    @PutMapping("/{id}/toggle-active")
+    public LessonModel toggleActiveStatus(@PathVariable String id) {
+        return lessonService.toggleActiveStatus(id);
     }
 
     @DeleteMapping("/{id}")

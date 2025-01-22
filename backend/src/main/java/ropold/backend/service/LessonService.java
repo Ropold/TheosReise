@@ -63,4 +63,18 @@ public class LessonService {
                 .filter(LessonModel::isActive)
                 .toList();
     }
+
+    public LessonModel toggleActiveStatus(String id) {
+        LessonModel lessonModel = getLessonById(id);
+        LessonModel newLessonModel = new LessonModel(
+                id,
+                !lessonModel.isActive(),
+                lessonModel.count(),
+                lessonModel.title(),
+                lessonModel.description(),
+                lessonModel.category(),
+                lessonModel.imageUrl()
+        );
+        return lessonRepository.save(newLessonModel);
+    }
 }
