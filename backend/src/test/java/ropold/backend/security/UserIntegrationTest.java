@@ -34,7 +34,6 @@ class UserIntegrationTest {
                 .andExpect(content().string("anonymousUser"));
     }
 
-
     @Test
     void testGetUserDetails_withoutLoggedInUser_expectUserNotAuthenticated() throws Exception {
         mockMvc.perform(get("/api/users/me/details"))

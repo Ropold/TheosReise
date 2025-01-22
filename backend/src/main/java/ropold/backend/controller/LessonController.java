@@ -92,7 +92,6 @@ public class LessonController {
     }
 
 
-
     @PutMapping("/{id}/toggle-active")
     public LessonModel toggleActiveStatus(@PathVariable String id) {
         return lessonService.toggleActiveStatus(id);
