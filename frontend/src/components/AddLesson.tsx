@@ -44,7 +44,7 @@ export default function AddLesson(props: Readonly<AddLessonProps>) {
         console.log("lessonData:", lessonData);
 
         axios
-            .post("/api/lessons", data, {
+            .post("/api/lesson", data, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },

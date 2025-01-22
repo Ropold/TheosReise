@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ropold.backend.exception.AccessDeniedException;
 import ropold.backend.model.LessonModel;
 import ropold.backend.model.LessonModelDto;
 import ropold.backend.service.CloudinaryService;
@@ -51,9 +52,10 @@ public class LessonController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public LessonModel addLesson(
+    public LessonModel postRoom(
             @RequestPart("lessonModelDto") @Valid LessonModelDto lessonModelDto,
             @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+
 
         String imageUrl = null;
         if (image != null && !image.isEmpty()) {
