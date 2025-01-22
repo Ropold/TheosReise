@@ -4,7 +4,7 @@ import SearchBar from "./SearchBar.tsx";
 import LessonCard from "./LessonCard.tsx";
 
 type HomeProps = {
-    lessons: LessonModel[];
+    activeLessons: LessonModel[];
     showSearch: boolean;
     currentPage: number;
     paginate: (pageNumber: number) => void;
@@ -24,9 +24,9 @@ export default function Home(props: Readonly<HomeProps>) {
     }, [props.showSearch]);
 
     useEffect(() => {
-        const filtered = filterLessons(props.lessons, searchQuery, filterType, selectedCategory);
+        const filtered = filterLessons(props.activeLessons, searchQuery, filterType, selectedCategory);
         setFilteredLessons(filtered);
-    }, [props.lessons, searchQuery, filterType, selectedCategory]);
+    }, [props.activeLessons, searchQuery, filterType, selectedCategory]);
 
     const filterLessons = (lessons: LessonModel[], query: string, filterType: string, category: string | "") => {
         const lowerQuery = query.toLowerCase();
@@ -59,7 +59,7 @@ export default function Home(props: Readonly<HomeProps>) {
                 <SearchBar
                     value={searchQuery}
                     onChange={setSearchQuery}
-                    lessons={props.lessons}
+                    lessons={props.activeLessons}
                     setFilteredLessons={setFilteredLessons}
                     filterType={filterType}
                     setFilterType={setFilterType}

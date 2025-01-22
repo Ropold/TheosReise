@@ -18,6 +18,7 @@ export default function App() {
     const [user, setUser] = useState<string>("anonymousUser");
     const [userDetails, setUserDetails] = useState<any>(null);
     const [lessons, setLessons] = useState<LessonModel[]>([]);
+    const [activeLessons, setActiveLessons] = useState<LessonModel[]>([]);
     const [showSearch, setShowSearch] = useState<boolean>(false);
     const [currentPage, setCurrentPage] = useState<number>(1);
 
@@ -36,6 +37,17 @@ export default function App() {
             .get("/api/lesson")
             .then((response) => {
                 setLessons(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+    const getActiveLessons = () => {
+        axios
+            .get("/api/lesson/active")
+            .then((response) => {
+                setActiveLessons(response.data);
             })
             .catch((error) => {
                 console.error(error);
@@ -67,6 +79,7 @@ export default function App() {
     useEffect(() => {
         getAllLessons();
         getUser();
+        getActiveLessons()
     }, []);
 
     useEffect(() => {
@@ -97,7 +110,7 @@ export default function App() {
             <Routes>
                 <Route path="*" element={<NotFound />} />
                 <Route path="/" element={<Home
-                    lessons={lessons}
+                    activeLessons={activeLessons}
                     showSearch={showSearch}
                     currentPage={currentPage}
                     paginate={setCurrentPage}
@@ -105,7 +118,7 @@ export default function App() {
                 <Route path="/lesson/:id" element={<Lesson />} />
                 <Route element={<ProtectedRoute user={user}/>}>
                     <Route path="/add-lesson" element={<AddLesson user={user} handleSubmit={handleNewLessonSubmit} userDetails={userDetails}/>} />
-                    <Route path="/my-lessons" element={<EditLessons user={user} />} />
+                    <Route path="/my-lessons" element={<EditLessons user={user} lessons={lessons}/>} />
                     <Route path="/profile" element={<Profile userDetails={userDetails} />} />
                 </Route>
             </Routes>
