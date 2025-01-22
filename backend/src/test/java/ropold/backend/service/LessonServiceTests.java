@@ -7,6 +7,7 @@ import ropold.backend.model.LessonModel;
 import ropold.backend.repository.LessonRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -17,12 +18,28 @@ class LessonServiceTests {
 
     IdService idService = mock(IdService.class);
     LessonRepository lessonRepository = mock(LessonRepository.class);
-    LessonService lessonService = new LessonService(idService, lessonRepository);
+    CloudinaryService cloudinaryService = mock(CloudinaryService.class);
+    LessonService lessonService = new LessonService(idService, lessonRepository, cloudinaryService );
 
     // LESSON DATA
     LessonModel lessonModel1 = new LessonModel("1", true, 1, "Testlesson", "test description", Category.BEGINNER, "testImageUrl");
     LessonModel lessonModel2 = new LessonModel("2", true, 2, "Testlesson2", "test description2", Category.INTERMEDIATE, "testImageUrl2");
     List<LessonModel> lessons = List.of(lessonModel1, lessonModel2);
+
+
+    @Test
+    void getActiveRooms() {
+        // Given
+        when(lessonRepository.findAll()).thenReturn(lessons);
+        List<LessonModel> expected = List.of(lessonModel1, lessonModel2);
+
+        // When
+        List<LessonModel> actual = lessonService.getActiveLessons();
+
+        // Then
+        assertEquals(expected, actual);
+    }
+
 
     @Test
     void getAllLessons() {
@@ -98,17 +115,37 @@ class LessonServiceTests {
     }
 
     @Test
-    void deleteLesson() {
+    void deleteRoomWithImage() {
         // Given
-        String id = "1";
+        String fixedId = "1";
+        when(lessonRepository.findById(fixedId)).thenReturn(Optional.of(lessonModel1));
 
         // When
-        lessonService.deleteLesson(id);
+        lessonService.deleteLesson(fixedId);
 
         // Then
-        verify(lessonRepository, times(1)).deleteById("1");
-        verifyNoMoreInteractions(lessonRepository);
+        verify(lessonRepository).deleteById(fixedId);
+        verify(lessonRepository).findById(fixedId);
+        verify(cloudinaryService).deleteImage(lessonModel1.imageUrl());
+    }
 
+    @Test
+    void deleteRoomWithoutImage() {
+        // Given
+        LessonModel lessonWithoutImage = new LessonModel(
+                "2", true, 2, "Testlesson2", "test description2", Category.INTERMEDIATE, null
+        );
+
+        String fixedId = "2";
+        when(lessonRepository.findById(fixedId)).thenReturn(Optional.of(lessonWithoutImage));
+
+        // When
+        lessonService.deleteLesson(fixedId);
+
+        // Then
+        verify(lessonRepository).deleteById(fixedId);
+        verify(lessonRepository).findById(fixedId);
+        verify(cloudinaryService, never()).deleteImage(any());
     }
 
 }
