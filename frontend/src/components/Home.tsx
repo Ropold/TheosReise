@@ -69,13 +69,15 @@ export default function Home(props: Readonly<HomeProps>) {
             )}
 
             <div className="lesson-card-container">
-                {currentLessons.map((lesson) => (
-                    <LessonCard key={lesson.id} lesson={lesson} />
-                ))}
+                {currentLessons
+                    .sort((a, b) => a.count - b.count) // Sortiere `currentLessons` nach `count`
+                    .map((lesson) => (
+                        <LessonCard key={lesson.id} lesson={lesson}/>
+                    ))}
             </div>
 
             <div className="button-group">
-                {Array.from({ length: totalPages }, (_, index) => (
+                {Array.from({length: totalPages}, (_, index) => (
                     <button
                         key={index + 1}
                         onClick={() => props.paginate(index + 1)}
