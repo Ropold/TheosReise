@@ -25,11 +25,6 @@ public class GlobalExceptionHandler {
         return new LessonError(e.getMessage());
     }
 
-    @ExceptionHandler(AccessDeniedException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public AccessDeniedError handleAccessDeniedException(AccessDeniedException e) {
-        return new AccessDeniedError(e.getMessage());
-    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
