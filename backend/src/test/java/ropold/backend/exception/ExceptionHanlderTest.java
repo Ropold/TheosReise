@@ -53,4 +53,6 @@ class ExceptionHandlerTest {
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.message").value("No Lesson found with ID: lesson-with-deletion-error"));
     }
+
+
 }
