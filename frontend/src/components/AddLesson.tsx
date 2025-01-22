@@ -44,14 +44,14 @@ export default function AddLesson(props: Readonly<AddLessonProps>) {
         console.log("lessonData:", lessonData);
 
         axios
-            .post("/api/lessons", data, {
+            .post("/api/theos-reise", data, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             })
             .then((response) => {
                 console.log("Antwort vom Server:", response.data);
-                navigate(`/lesson/${response.data.id}`);
+                navigate(`/theos-reise/${response.data.id}`);
                 props.handleSubmit(response.data);
             })
             .catch((error) => {

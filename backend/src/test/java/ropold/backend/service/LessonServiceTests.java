@@ -7,6 +7,7 @@ import ropold.backend.model.LessonModel;
 import ropold.backend.repository.LessonRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -17,12 +18,54 @@ class LessonServiceTests {
 
     IdService idService = mock(IdService.class);
     LessonRepository lessonRepository = mock(LessonRepository.class);
-    LessonService lessonService = new LessonService(idService, lessonRepository);
+    CloudinaryService cloudinaryService = mock(CloudinaryService.class);
+    LessonService lessonService = new LessonService(idService, lessonRepository, cloudinaryService );
 
     // LESSON DATA
     LessonModel lessonModel1 = new LessonModel("1", true, 1, "Testlesson", "test description", Category.BEGINNER, "testImageUrl");
     LessonModel lessonModel2 = new LessonModel("2", true, 2, "Testlesson2", "test description2", Category.INTERMEDIATE, "testImageUrl2");
     List<LessonModel> lessons = List.of(lessonModel1, lessonModel2);
+
+
+    @Test
+    void getActiveRooms() {
+        // Given
+        when(lessonRepository.findAll()).thenReturn(lessons);
+        List<LessonModel> expected = List.of(lessonModel1, lessonModel2);
+
+        // When
+        List<LessonModel> actual = lessonService.getActiveLessons();
+
+        // Then
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void toggleActiveStatus() {
+        // Given
+        LessonModel existingLesson = new LessonModel(
+                "1", true, 1, "Testlesson", "test description", Category.BEGINNER, "testImageUrl"
+        );
+
+        LessonModel updatedLesson = new LessonModel(
+                "1", false, 1, existingLesson.title(), existingLesson.description(),
+                existingLesson.category(), existingLesson.imageUrl()
+        );
+
+        when(lessonRepository.findById("1")).thenReturn(Optional.of(existingLesson));
+        when(lessonRepository.save(any(LessonModel.class))).thenReturn(updatedLesson);
+
+        // When
+        LessonModel result = lessonService.toggleActiveStatus("1");
+
+        // Then
+        assertEquals(updatedLesson, result);
+        assertEquals(false, result.isActive()); // Verify the active status was toggled
+        verify(lessonRepository).findById("1");
+        verify(lessonRepository).save(updatedLesson);
+    }
+
+
 
     @Test
     void getAllLessons() {
@@ -98,17 +141,37 @@ class LessonServiceTests {
     }
 
     @Test
-    void deleteLesson() {
+    void deleteRoomWithImage() {
         // Given
-        String id = "1";
+        String fixedId = "1";
+        when(lessonRepository.findById(fixedId)).thenReturn(Optional.of(lessonModel1));
 
         // When
-        lessonService.deleteLesson(id);
+        lessonService.deleteLesson(fixedId);
 
         // Then
-        verify(lessonRepository, times(1)).deleteById("1");
-        verifyNoMoreInteractions(lessonRepository);
+        verify(lessonRepository).deleteById(fixedId);
+        verify(lessonRepository).findById(fixedId);
+        verify(cloudinaryService).deleteImage(lessonModel1.imageUrl());
+    }
 
+    @Test
+    void deleteRoomWithoutImage() {
+        // Given
+        LessonModel lessonWithoutImage = new LessonModel(
+                "2", true, 2, "Testlesson2", "test description2", Category.INTERMEDIATE, null
+        );
+
+        String fixedId = "2";
+        when(lessonRepository.findById(fixedId)).thenReturn(Optional.of(lessonWithoutImage));
+
+        // When
+        lessonService.deleteLesson(fixedId);
+
+        // Then
+        verify(lessonRepository).deleteById(fixedId);
+        verify(lessonRepository).findById(fixedId);
+        verify(cloudinaryService, never()).deleteImage(any());
     }
 
 }

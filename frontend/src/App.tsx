@@ -10,14 +10,15 @@ import {LessonModel} from "./components/model/LessonModel.ts";
 import NotFound from "./components/NotFound.tsx";
 import Profile from "./components/Profile.tsx";
 import AddLesson from "./components/AddLesson.tsx";
-import MyLessons from "./components/MyLessons.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
+import EditLessons from "./components/EditLessons.tsx";
 
 export default function App() {
 
     const [user, setUser] = useState<string>("anonymousUser");
     const [userDetails, setUserDetails] = useState<any>(null);
     const [lessons, setLessons] = useState<LessonModel[]>([]);
+    const [activeLessons, setActiveLessons] = useState<LessonModel[]>([]);
     const [showSearch, setShowSearch] = useState<boolean>(false);
     const [currentPage, setCurrentPage] = useState<number>(1);
 
@@ -33,9 +34,20 @@ export default function App() {
 
     const getAllLessons = () => {
         axios
-            .get("/api/lesson")
+            .get("/api/theos-reise")
             .then((response) => {
                 setLessons(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+    const getActiveLessons = () => {
+        axios
+            .get("/api/theos-reise/active")
+            .then((response) => {
+                setActiveLessons(response.data);
             })
             .catch((error) => {
                 console.error(error);
@@ -65,13 +77,14 @@ export default function App() {
     }
 
     useEffect(() => {
-        getAllLessons();
         getUser();
+        getActiveLessons()
     }, []);
 
     useEffect(() => {
         if (user !== "anonymousUser") {
             getUserDetails();
+            getAllLessons();
         }
     }, [user]);
 
@@ -89,6 +102,7 @@ export default function App() {
             <Navbar
                 user={user}
                 getUser={getUser}
+                getActiveLessons={getActiveLessons}
                 getAllLessons={getAllLessons}
                 showSearch={showSearch}
                 resetCurrentPage={resetCurrentPage}
@@ -97,15 +111,15 @@ export default function App() {
             <Routes>
                 <Route path="*" element={<NotFound />} />
                 <Route path="/" element={<Home
-                    lessons={lessons}
+                    activeLessons={activeLessons}
                     showSearch={showSearch}
                     currentPage={currentPage}
                     paginate={setCurrentPage}
                 />}/>
-                <Route path="/lesson/:id" element={<Lesson />} />
+                <Route path="/theos-reise/:id" element={<Lesson />} />
                 <Route element={<ProtectedRoute user={user}/>}>
                     <Route path="/add-lesson" element={<AddLesson user={user} handleSubmit={handleNewLessonSubmit} userDetails={userDetails}/>} />
-                    <Route path="/my-lessons" element={<MyLessons user={user} />} />
+                    <Route path="/edit-lessons" element={<EditLessons user={user} lessons={lessons} setLessons={setLessons}/>} />
                     <Route path="/profile" element={<Profile userDetails={userDetails} />} />
                 </Route>
             </Routes>
