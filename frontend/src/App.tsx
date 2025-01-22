@@ -10,8 +10,8 @@ import {LessonModel} from "./components/model/LessonModel.ts";
 import NotFound from "./components/NotFound.tsx";
 import Profile from "./components/Profile.tsx";
 import AddLesson from "./components/AddLesson.tsx";
-import MyLessons from "./components/MyLessons.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
+import EditLessons from "./components/EditLessons.tsx";
 
 export default function App() {
 
@@ -105,7 +105,7 @@ export default function App() {
                 <Route path="/lesson/:id" element={<Lesson />} />
                 <Route element={<ProtectedRoute user={user}/>}>
                     <Route path="/add-lesson" element={<AddLesson user={user} handleSubmit={handleNewLessonSubmit} userDetails={userDetails}/>} />
-                    <Route path="/my-lessons" element={<MyLessons user={user} />} />
+                    <Route path="/my-lessons" element={<EditLessons user={user} />} />
                     <Route path="/profile" element={<Profile userDetails={userDetails} />} />
                 </Route>
             </Routes>

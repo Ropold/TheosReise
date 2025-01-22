@@ -58,4 +58,9 @@ public class LessonService {
     }
 
 
+    public List<LessonModel> getActiveLessons() {
+        return lessonRepository.findAll().stream()
+                .filter(LessonModel::isActive)
+                .toList();
+    }
 }

@@ -34,21 +34,10 @@ public class LessonController {
         return lessonService.getLessonById(id);
     }
 
-//    @ResponseStatus(HttpStatus.CREATED)
-//    @PostMapping
-//    public LessonModel addLesson(@RequestBody LessonModelDto lessonModelDto) {
-//        return lessonService.addLesson(
-//                new LessonModel(
-//                        null,
-//                        true,
-//                        lessonModelDto.count(),
-//                        lessonModelDto.title(),
-//                        lessonModelDto.description(),
-//                        lessonModelDto.category(),
-//                        lessonModelDto.imageUrl()
-//                )
-//        );
-//    }
+    @GetMapping("/active")
+    public List<LessonModel> getActiveLessons() {
+        return lessonService.getActiveLessons();
+    }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
