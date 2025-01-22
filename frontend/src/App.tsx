@@ -102,6 +102,7 @@ export default function App() {
             <Navbar
                 user={user}
                 getUser={getUser}
+                getActiveLessons={getActiveLessons}
                 getAllLessons={getAllLessons}
                 showSearch={showSearch}
                 resetCurrentPage={resetCurrentPage}

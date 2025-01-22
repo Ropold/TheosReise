@@ -5,6 +5,7 @@ import "./styles/BarButtons.css"
 type NavbarProps = {
     user: string;
     getUser: () => void;
+    getActiveLessons: () => void;
     getAllLessons: () => void;
     showSearch: boolean;
     resetCurrentPage: () => void;
@@ -36,7 +37,7 @@ export default function Navbar(props: Readonly<NavbarProps>) {
             <div
                 className="clickable-header"
                 onClick={() => {
-                    props.getAllLessons();
+                    props.getActiveLessons();
                     props.resetCurrentPage();
                     navigate("/");
                 }}>
