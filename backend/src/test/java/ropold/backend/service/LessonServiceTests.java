@@ -40,6 +40,32 @@ class LessonServiceTests {
         assertEquals(expected, actual);
     }
 
+    @Test
+    void toggleActiveStatus() {
+        // Given
+        LessonModel existingLesson = new LessonModel(
+                "1", true, 1, "Testlesson", "test description", Category.BEGINNER, "testImageUrl"
+        );
+
+        LessonModel updatedLesson = new LessonModel(
+                "1", false, 1, existingLesson.title(), existingLesson.description(),
+                existingLesson.category(), existingLesson.imageUrl()
+        );
+
+        when(lessonRepository.findById("1")).thenReturn(Optional.of(existingLesson));
+        when(lessonRepository.save(any(LessonModel.class))).thenReturn(updatedLesson);
+
+        // When
+        LessonModel result = lessonService.toggleActiveStatus("1");
+
+        // Then
+        assertEquals(updatedLesson, result);
+        assertEquals(false, result.isActive()); // Verify the active status was toggled
+        verify(lessonRepository).findById("1");
+        verify(lessonRepository).save(updatedLesson);
+    }
+
+
 
     @Test
     void getAllLessons() {
