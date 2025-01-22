@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { LessonModel } from "./model/LessonModel.ts";
 import "./styles/LessonCard.css";
 import "./styles/BarButtons.css";
+import {getCategoryDisplayName} from "../utils/GetCategoryDisyplayName.ts";
 
 type LessonCardProps = {
     lesson: LessonModel;
@@ -18,7 +19,7 @@ export default function LessonCard(props: Readonly<LessonCardProps>) {
         <div className="lesson-card" onClick={handleCardClick}>
             <h3>{props.lesson.title}</h3>
             <p>{props.lesson.description}</p>
-            <p>Category: {props.lesson.category}</p>
+            <p>Category: {getCategoryDisplayName(props.lesson.category)}</p>
             <p>Count: {props.lesson.count}</p>
             <img
                 src={props.lesson.imageUrl}

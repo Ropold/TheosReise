@@ -183,6 +183,11 @@ export default function EditLessons(props: Readonly<EditLessonsProps>) {
                                 <div className="lesson-card">
                                     <h2>{lesson.title}</h2>
                                     <p>{lesson.description}</p>
+                                    <p>Count: {lesson.count}</p>
+                                    <img
+                                        src={lesson.imageUrl}
+                                        alt={lesson.title}
+                                        className="lesson-card-image"/>
                                     <div className="button-group">
                                         <button
                                             id={lesson.isActive ? "active-button" : "inactive-button"}

@@ -14,6 +14,7 @@ public class LessonService {
 
     private final IdService idService;
     private final LessonRepository lessonRepository;
+    private final CloudinaryService cloudinaryService;
 
     public List<LessonModel> getAllLessons() {
         return lessonRepository.findAll();
@@ -54,9 +55,15 @@ public class LessonService {
     }
 
     public void deleteLesson(String id) {
+        LessonModel lesson = lessonRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No Lesson found with ID: " + id));
+
+        if (lesson.imageUrl() != null) {
+            cloudinaryService.deleteImage(lesson.imageUrl());
+        }
+
         lessonRepository.deleteById(id);
     }
-
 
     public List<LessonModel> getActiveLessons() {
         return lessonRepository.findAll().stream()
