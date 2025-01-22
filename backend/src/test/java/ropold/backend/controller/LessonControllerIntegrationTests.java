@@ -47,7 +47,7 @@ class LessonControllerIntegrationTests {
     void getAllLessons_expectListWithOneLesson_whenOneLessonSaved() throws Exception {
         // WHEN
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/lesson")
+                        MockMvcRequestBuilders.get("/api/theos-reise")
                 )
                 // THEN
                 .andExpect(status().isOk())
@@ -70,7 +70,7 @@ class LessonControllerIntegrationTests {
     void getLessonById_returnLessonWithId1_whenLessonWithId1Saved() throws Exception {
         // WHEN
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/lesson/1")
+                        MockMvcRequestBuilders.get("/api/theos-reise/1")
                 )
                 // THEN
                 .andExpect(status().isOk())
@@ -94,7 +94,7 @@ class LessonControllerIntegrationTests {
 
         // WHEN
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/api/lesson")
+                        MockMvcRequestBuilders.post("/api/theos-reise")
                                 .contentType("application/json")
                                 .content("""
                             {
@@ -121,7 +121,7 @@ class LessonControllerIntegrationTests {
     void putLesson_expectUpdatedLesson_whenLessonExists() throws Exception {
         // WHEN
         mockMvc.perform(
-                        MockMvcRequestBuilders.put("/api/lesson/1")
+                        MockMvcRequestBuilders.put("/api/theos-reise/1")
                                 .contentType("application/json")
                                 .content("""
                             {
@@ -148,7 +148,7 @@ class LessonControllerIntegrationTests {
     void deleteLesson_expectNoContent_whenLessonExists() throws Exception {
         // WHEN
         mockMvc.perform(
-                        MockMvcRequestBuilders.delete("/api/lesson/1")
+                        MockMvcRequestBuilders.delete("/api/theos-reise/1")
                 )
                 // THEN
                 .andExpect(status().isNoContent());
