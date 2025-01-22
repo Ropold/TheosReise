@@ -2,6 +2,7 @@ package ropold.backend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ropold.backend.exception.LessonNotFoundException;
 import ropold.backend.model.LessonModel;
 import ropold.backend.repository.LessonRepository;
 
@@ -21,8 +22,9 @@ public class LessonService {
     }
 
     public LessonModel getLessonById(String id) {
-        return lessonRepository.findById(id).orElseThrow(() -> new NoSuchElementException("No Lesson found with Id: " + id));
+        return lessonRepository.findById(id).orElseThrow(() -> new LessonNotFoundException(id));
     }
+
 
     public LessonModel addLesson(LessonModel lessonModel) {
         LessonModel newLessonModel = new LessonModel(
