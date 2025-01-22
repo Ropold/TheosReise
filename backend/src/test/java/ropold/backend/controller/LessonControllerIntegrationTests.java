@@ -10,6 +10,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -17,12 +21,15 @@ import ropold.backend.model.Category;
 import ropold.backend.model.LessonModel;
 import ropold.backend.repository.LessonRepository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -211,6 +218,66 @@ class LessonControllerIntegrationTests {
     }
 
 
+    @Test
+    void getActiveLessons_shouldReturnActiveLessons() throws Exception {
+        // GIVEN: Zwei Lektionen, eine aktive und eine inaktive
+        LessonModel activeLesson = new LessonModel(
+                "1", true, 1, "Testlesson", "test description", Category.BEGINNER, "testImageUrl"
+        );
 
+        LessonModel inactiveLesson = new LessonModel(
+                "2", false, 2, "Testlesson2", "test description2", Category.INTERMEDIATE, "testImageUrl2"
+        );
+
+        lessonRepository.saveAll(List.of(activeLesson, inactiveLesson));
+
+        // WHEN: Die Methode getActiveLessons wird aufgerufen
+        mockMvc.perform(get("/api/theos-reise/active"))
+                // THEN: Nur die aktive Lektion wird zurückgegeben
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                [
+                    {
+                        "id": "1",
+                        "isActive": true,
+                        "count": 1,
+                        "title": "Testlesson",
+                        "description": "test description",
+                        "category": "BEGINNER",
+                        "imageUrl": "testImageUrl"
+                    }
+                ]
+            """));
+    }
+
+    @Test
+    void toggleActiveStatus_shouldToggleActiveStatus() throws Exception {
+        // GIVEN: Eine aktive Lektion
+        LessonModel lesson = new LessonModel(
+                "1", true, 1, "Testlesson", "test description", Category.BEGINNER, "testImageUrl"
+        );
+        lessonRepository.save(lesson);
+
+        // WHEN: Die Methode toggleActiveStatus wird aufgerufen
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/theos-reise/{id}/toggle-active", "1"))
+                // THEN: Die Lektion sollte nun inaktiv sein und der Status sollte sich ändern
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                {
+                    "id": "1",
+                    "isActive": false,
+                    "count": 1,
+                    "title": "Testlesson",
+                    "description": "test description",
+                    "category": "BEGINNER",
+                    "imageUrl": "testImageUrl"
+                }
+            """));
+
+        // Überprüfen, ob der Status der Lektion tatsächlich umgeschaltet wurde
+        LessonModel updatedLesson = lessonRepository.findById("1").orElseThrow();
+        Assertions.assertFalse(updatedLesson.isActive());
+    }
 
 }
+
