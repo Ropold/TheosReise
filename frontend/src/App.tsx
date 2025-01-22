@@ -77,7 +77,6 @@ export default function App() {
     }
 
     useEffect(() => {
-        getAllLessons();
         getUser();
         getActiveLessons()
     }, []);
@@ -85,6 +84,7 @@ export default function App() {
     useEffect(() => {
         if (user !== "anonymousUser") {
             getUserDetails();
+            getAllLessons();
         }
     }, [user]);
 
@@ -118,7 +118,7 @@ export default function App() {
                 <Route path="/lesson/:id" element={<Lesson />} />
                 <Route element={<ProtectedRoute user={user}/>}>
                     <Route path="/add-lesson" element={<AddLesson user={user} handleSubmit={handleNewLessonSubmit} userDetails={userDetails}/>} />
-                    <Route path="/my-lessons" element={<EditLessons user={user} lessons={lessons}/>} />
+                    <Route path="/edit-lessons" element={<EditLessons user={user} lessons={lessons} setLessons={setLessons}/>} />
                     <Route path="/profile" element={<Profile userDetails={userDetails} />} />
                 </Route>
             </Routes>

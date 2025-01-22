@@ -59,10 +59,10 @@ export default function Navbar(props: Readonly<NavbarProps>) {
                     <button
                         onClick={() => {
                             props.getAllLessons();
-                            navigate(`/my-lessons`);
+                            navigate(`/edit-lessons`);
                         }}
                     >
-                        My Lessons
+                        Edit Lessons
                     </button>
                     <button onClick={() => navigate(`/profile`)}>Profile</button>
                     <button onClick={logoutFromGithub}>Logout</button>
