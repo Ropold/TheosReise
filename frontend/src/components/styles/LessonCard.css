@@ -39,7 +39,7 @@
     outline: none;
 }
 
-.room-card-container {
+.lesson-card-container {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
@@ -67,33 +67,9 @@
     margin: 0 auto; /* Horizontal zentrieren */
 }
 
-/* Styling für die Karte */
-.room-card {
-    cursor: pointer;
-    height: 400px;
-    width: 400px;
-    background-color: #fff; /* Heller Hintergrund für die Karte */
-    border: 1px solid #ddd; /* Dünne graue Grenze */
-    border-radius: 12px; /* Abgerundete Ecken */
-    padding: 20px; /* padding: <oben> <rechts> <unten> <links>; */
-    margin: 20px; /* Abstand zwischen den Karten */
-    display: flex;
-    flex-direction: column; /* Vertikales Layout für den Inhalt */
-    justify-content: flex-start;
-    align-items: center;
-    position: relative;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Leichter Schatten */
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animationen für Hover */
-}
-
-/* Hover-Effekte für die Karte */
-.room-card:hover {
-    transform: translateY(-5px) scale(1.03); /* Kleine Erhöhung und Vergrößerung */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Stärkerer Schatten bei Hover */
-}
 
 /* Styling für das Bild */
-.room-card-image {
+.lesson-card-image {
     width: 280px; /* Bild passt sich der Breite an */
     height: 200px; /* Feste Höhe */
     object-fit: cover; /* Bild wird vollständig angezeigt */
@@ -102,13 +78,13 @@
 .no-image {
     justify-content: center !important;  /* Diese Regel wird immer angewendet */ /* Beispiel für Hintergrundfarbe */
 }
-.room-details{
+.lesson-details{
     width: 800px; /* Behalte die Breite bei */
     margin: 0 auto; /* Horizontal zentrieren */
 }
 
 /* Text in der Karte */
-.room-card-text {
+.lesson-card-text {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -118,7 +94,7 @@
 }
 
 /* Überschrift (Titel der RoomCard) */
-.room-card-text h2 {
+.lesson-card-text h2 {
     font-size: 1.5rem;
     font-weight: bold;
     margin: 0 0 10px 0;
@@ -127,7 +103,7 @@
 }
 
 /* Beschreibungstext */
-.room-card p {
+.lesson-card p {
     font-size: 1rem;
     color: #555;
     margin: 5px 0;

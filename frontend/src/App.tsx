@@ -34,7 +34,7 @@ export default function App() {
 
     const getAllLessons = () => {
         axios
-            .get("/api/lesson")
+            .get("/api/theos-reise")
             .then((response) => {
                 setLessons(response.data);
             })
@@ -45,7 +45,7 @@ export default function App() {
 
     const getActiveLessons = () => {
         axios
-            .get("/api/lesson/active")
+            .get("/api/theos-reise/active")
             .then((response) => {
                 setActiveLessons(response.data);
             })
@@ -115,7 +115,7 @@ export default function App() {
                     currentPage={currentPage}
                     paginate={setCurrentPage}
                 />}/>
-                <Route path="/lesson/:id" element={<Lesson />} />
+                <Route path="/theos-reise/:id" element={<Lesson />} />
                 <Route element={<ProtectedRoute user={user}/>}>
                     <Route path="/add-lesson" element={<AddLesson user={user} handleSubmit={handleNewLessonSubmit} userDetails={userDetails}/>} />
                     <Route path="/edit-lessons" element={<EditLessons user={user} lessons={lessons} setLessons={setLessons}/>} />
