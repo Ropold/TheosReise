@@ -61,25 +61,26 @@ public class LessonController {
     }
 
     @PutMapping("/{id}")
-    public LessonModel putRoom(@PathVariable String id,
-                             @RequestPart("roomModelDto") LessonModelDto lessonModelDto,
-                             @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+    public LessonModel updateLesson(
+            @PathVariable String id,
+            @RequestPart("lessonModelDto") @Valid LessonModelDto lessonModelDto,
+            @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
 
-        LessonModel existingRoom = lessonService.getLessonById(id);
+        LessonModel existingLesson = lessonService.getLessonById(id);
 
         String newImageUrl;
         if (image != null && !image.isEmpty()) {
-            if (existingRoom.imageUrl() != null) {
-                cloudinaryService.deleteImage(existingRoom.imageUrl());
+            if (existingLesson.imageUrl() != null) {
+                cloudinaryService.deleteImage(existingLesson.imageUrl());
             }
             newImageUrl = cloudinaryService.uploadImage(image);
         } else {
-            newImageUrl = existingRoom.imageUrl();
+            newImageUrl = existingLesson.imageUrl();
         }
 
         LessonModel updatedLesson = new LessonModel(
                 id,
-                existingRoom.isActive(),
+                existingLesson.isActive(),
                 lessonModelDto.count(),
                 lessonModelDto.title(),
                 lessonModelDto.description(),
@@ -89,6 +90,8 @@ public class LessonController {
 
         return lessonService.updateLessonWithPut(id, updatedLesson);
     }
+
+
 
     @PutMapping("/{id}/toggle-active")
     public LessonModel toggleActiveStatus(@PathVariable String id) {
