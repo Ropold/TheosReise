@@ -3,6 +3,7 @@ import axios from "axios";
 import { LessonModel } from "./model/LessonModel.ts";
 import "./styles/LessonCard.css";
 import "./styles/BarButtons.css";
+import {getCategoryDisplayName} from "../utils/GetCategoryDisyplayName.ts";
 
 type EditLessonsProps = {
     user: string;
@@ -181,23 +182,30 @@ export default function EditLessons(props: Readonly<EditLessonsProps>) {
                         userLessons.map((lesson) => (
                             <div key={lesson.id}>
                                 <div className="lesson-card">
-                                    <h2>{lesson.title}</h2>
-                                    <p>{lesson.description}</p>
-                                    <p>Count: {lesson.count}</p>
-                                    <img
-                                        src={lesson.imageUrl}
-                                        alt={lesson.title}
-                                        className="lesson-card-image"/>
-                                    <div className="button-group">
-                                        <button
-                                            id={lesson.isActive ? "active-button" : "inactive-button"}
-                                            onClick={() => handleToggleActiveStatus(lesson.id)}
-                                        >
-                                            {lesson.isActive ? "Active" : "Offline"}
-                                        </button>
-                                        <button onClick={() => handleEditToggle(lesson.id)}>Edit</button>
-                                        <button id="button-delete" onClick={() => handleDeleteClick(lesson.id)}>Delete</button>
+                                    <div className={`lesson-card-text ${!lesson.imageUrl ? 'no-image' : ''}`}>
+                                        <h3>{lesson.title}</h3>
+                                        <p><strong>Category: </strong>{getCategoryDisplayName(lesson.category)}</p>
+                                        <p><strong>Count: </strong>{lesson.count}</p>
                                     </div>
+
+                                    {lesson.imageUrl ? (
+                                        <img
+                                            src={lesson.imageUrl}
+                                            alt={lesson.title}
+                                            className="lesson-card-image"
+                                        />
+                                    ) : null}
+                                </div>
+                                <div className="button-group">
+                                    <button
+                                        id={lesson.isActive ? "active-button" : "inactive-button"}
+                                        onClick={() => handleToggleActiveStatus(lesson.id)}
+                                    >
+                                        {lesson.isActive ? "Active" : "Offline"}
+                                    </button>
+                                    <button onClick={() => handleEditToggle(lesson.id)}>Edit</button>
+                                    <button id="button-delete" onClick={() => handleDeleteClick(lesson.id)}>Delete
+                                    </button>
                                 </div>
                             </div>
                         ))
