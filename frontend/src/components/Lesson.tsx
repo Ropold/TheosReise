@@ -10,11 +10,11 @@ import Lesson2 from "./lesson-content/Lesson2.tsx";
 import Lesson3 from "./lesson-content/Lesson3.tsx";
 // Weitere Komponenten bei Bedarf importieren
 
-// Map aller Komponenten basierend auf Count-Zahlen
-const lessonComponents: Record<number, React.FC> = {
-    1: Lesson1,
-    2: Lesson2,
-    3: Lesson3,
+// Map der Komponenten basierend auf IDs
+const lessonComponents: Record<string, React.FC> = {
+    "e99aaad9-0b9e-45ee-9816-5c067b856ac1": Lesson1,
+    "576229fb-e210-490f-a637-9bdef55c15cd": Lesson2,
+    "36d91ddc-680b-4704-81b9-201154d611eb": Lesson3,
     // Weitere Komponenten hinzufügen
 };
 
@@ -38,8 +38,8 @@ export default function Lesson() {
         fetchLessonDetails();
     }, [id]);
 
-    // Dynamische Komponente auswählen
-    const DynamicLessonComponent = lessonComponents[lesson.count] || null;
+    // Dynamische Komponente auswählen basierend auf der ID
+    const DynamicLessonComponent = lessonComponents[lesson.id] || null;
 
     return (
         <>
@@ -70,7 +70,7 @@ export default function Lesson() {
                 {DynamicLessonComponent ? (
                     <DynamicLessonComponent />
                 ) : (
-                    <p>Keine zusätzliche Komponente für Count: {lesson.count}</p>
+                    <p>Keine zusätzliche Komponente für die ID: {lesson.id}</p>
                 )}
             </div>
         </>
