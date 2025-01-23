@@ -4,6 +4,8 @@ import { LessonModel } from "./model/LessonModel.ts";
 import "./styles/LessonCard.css";
 import "./styles/BarButtons.css";
 import { getCategoryDisplayName } from "../utils/GetCategoryDisyplayName.ts";
+import LessonCard from "./LessonCard.tsx";
+import {Category} from "./model/Category.ts";
 
 type EditLessonsProps = {
     user: string;
@@ -18,7 +20,7 @@ export default function EditLessons(props: Readonly<EditLessonsProps>) {
     const [image, setImage] = useState<File | null>(null);
     const [showPopup, setShowPopup] = useState(false);
     const [lessonToDelete, setLessonToDelete] = useState<string | null>(null);
-    const [countError, setCountError] = useState<string | null>(null);
+    const [category, setCategory] = useState<string>("");
 
     useEffect(() => {
         setUserLessons(props.lessons);
@@ -30,22 +32,13 @@ export default function EditLessons(props: Readonly<EditLessonsProps>) {
             setEditData(lessonToEdit);
             setIsEditing(true);
             setImage(null);
-            setCountError(null);
+            setCategory(lessonToEdit.category || ""); // Wenn die Kategorie nicht definiert ist, bleibt sie leer
         }
     };
 
     const handleSaveEdit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!editData) return;
-
-        const isCountUnique = !props.lessons.some(
-            (lesson) => lesson.count === editData.count && lesson.id !== editData.id
-        );
-
-        if (!isCountUnique) {
-            setCountError("Count value must be unique. Please choose a different value.");
-            return;
-        }
 
         const data = new FormData();
         if (image) {
@@ -54,6 +47,7 @@ export default function EditLessons(props: Readonly<EditLessonsProps>) {
 
         const updatedLessonData = {
             ...editData,
+            category, // Füge die Kategorie zum `updatedLessonData` hinzu
         };
 
         data.append("lessonModelDto", new Blob([JSON.stringify(updatedLessonData)], { type: "application/json" }));
@@ -123,11 +117,6 @@ export default function EditLessons(props: Readonly<EditLessonsProps>) {
     };
 
     const handleCountChange = (newCount: number) => {
-        if (props.lessons.some((lesson) => lesson.count === newCount && lesson.id !== editData?.id)) {
-            setCountError(`The count "${newCount}" is already in use.`);
-        } else {
-            setCountError(null);
-        }
         setEditData({ ...editData!, count: newCount });
     };
 
@@ -149,7 +138,7 @@ export default function EditLessons(props: Readonly<EditLessonsProps>) {
                                 className="input-small"
                                 type="text"
                                 value={editData?.title || ""}
-                                onChange={(e) => setEditData({ ...editData!, title: e.target.value })}
+                                onChange={(e) => setEditData({...editData!, title: e.target.value})}
                             />
                         </label>
 
@@ -158,20 +147,53 @@ export default function EditLessons(props: Readonly<EditLessonsProps>) {
                             <textarea
                                 className="textarea-large"
                                 value={editData?.description || ""}
-                                onChange={(e) => setEditData({ ...editData!, description: e.target.value })}
+                                onChange={(e) => setEditData({...editData!, description: e.target.value})}
                             />
                         </label>
 
                         <label>
                             Count:
-                            <input
-                                className={`input-small ${countError ? "error-input" : ""}`}
-                                type="number"
+                            <select
+                                className="input-small"
                                 value={editData?.count || ""}
                                 onChange={(e) => handleCountChange(Number(e.target.value))}
-                            />
-                            {countError && <p className="error-message">{countError}</p>}
+                            >
+                                <option value="" disabled>
+                                    Select Count
+                                </option>
+                                {[...Array(25).keys()]
+                                    .map((n) => n + 1) // Erzeuge Zahlen von 1 bis 10
+                                    .filter(
+                                        (n) =>
+                                            n === editData?.count || // Füge den aktuellen Wert von `editData.count` ein
+                                            !props.lessons.some((lesson) => lesson.count === n) // Filtere bereits genutzte Zahlen
+                                    )
+                                    .map((n) => (
+                                        <option key={n} value={n}>
+                                            {n}
+                                        </option>
+                                    ))}
+                            </select>
                         </label>
+
+                        {/* Kategorie Auswahl */}
+                        <label>
+                            Category:
+                            <select
+                                className="input-small"
+                                value={category}
+                                onChange={(e) => setCategory(e.target.value as Category)}
+                                required
+                            >
+                                <option value="" disabled>
+                                    *Choose a category*
+                                </option>
+                                <option value="BEGINNER">{getCategoryDisplayName("BEGINNER")}</option>
+                                <option value="INTERMEDIATE">{getCategoryDisplayName("INTERMEDIATE")}</option>
+                                <option value="ADVANCED">{getCategoryDisplayName("ADVANCED")}</option>
+                            </select>
+                        </label>
+
 
                         <label>
                             Visibility:
@@ -179,7 +201,7 @@ export default function EditLessons(props: Readonly<EditLessonsProps>) {
                                 className="input-small"
                                 value={editData?.isActive ? "true" : "false"}
                                 onChange={(e) =>
-                                    setEditData({ ...editData!, isActive: e.target.value === "true" })
+                                    setEditData({...editData!, isActive: e.target.value === "true"})
                                 }
                             >
                                 <option value="true">Active</option>
@@ -189,14 +211,12 @@ export default function EditLessons(props: Readonly<EditLessonsProps>) {
 
                         <label>
                             Image:
-                            <input type="file" onChange={onFileChange} />
-                            {image && <img src={URL.createObjectURL(image)} className="lesson-card-image" />}
+                            <input type="file" onChange={onFileChange}/>
+                            {image && <img src={URL.createObjectURL(image)} className="lesson-card-image"/>}
                         </label>
 
                         <div className="button-group">
-                            <button type="submit" disabled={!!countError}>
-                                Save Changes
-                            </button>
+                            <button type="submit">Save Changes</button>
                             <button type="button" onClick={() => setIsEditing(false)}>
                                 Cancel
                             </button>
@@ -205,54 +225,28 @@ export default function EditLessons(props: Readonly<EditLessonsProps>) {
                 </div>
             ) : (
                 <div className="lesson-card-container">
-                    {userLessons.length > 0 ? (
-                        userLessons
-                            .slice()
-                            .sort((a, b) => a.count - b.count)
-                            .map((lesson: LessonModel) => (
-                                <div key={lesson.id}>
-                                    <div className="lesson-card">
-                                        <div
-                                            className={`lesson-card-text ${!lesson.imageUrl ? "no-image" : ""}`}
-                                        >
-                                            <h3>{lesson.title}</h3>
-                                            <p>
-                                                <strong>Category: </strong>
-                                                {getCategoryDisplayName(lesson.category)}
-                                            </p>
-                                            <p>
-                                                <strong>Count: </strong>
-                                                {lesson.count}
-                                            </p>
-                                        </div>
-                                        {lesson.imageUrl && (
-                                            <img
-                                                src={lesson.imageUrl}
-                                                alt={lesson.title}
-                                                className="lesson-card-image"
-                                            />
-                                        )}
-                                    </div>
-                                    <div className="button-group">
-                                        <button
-                                            id={lesson.isActive ? "active-button" : "inactive-button"}
-                                            onClick={() => handleToggleActiveStatus(lesson.id)}
-                                        >
-                                            {lesson.isActive ? "Active" : "Offline"}
-                                        </button>
-                                        <button onClick={() => handleEditToggle(lesson.id)}>Edit</button>
-                                        <button
-                                            id="button-delete"
-                                            onClick={() => handleDeleteClick(lesson.id)}
-                                        >
-                                            Delete
-                                        </button>
-                                    </div>
+                    {userLessons
+                        .sort((a, b) => a.count - b.count) // Sortiere `currentLessons` nach `count`
+                        .map((lesson) => (
+                            <div key={lesson.id} className="lesson-card-wrapper">
+                                <LessonCard key={lesson.id} lesson={lesson}/>
+                                <div className="button-group">
+                                <button
+                                        id={lesson.isActive ? "active-button" : "inactive-button"}
+                                        onClick={() => handleToggleActiveStatus(lesson.id)}
+                                    >
+                                        {lesson.isActive ? "Active" : "Offline"}
+                                    </button>
+                                    <button onClick={() => handleEditToggle(lesson.id)}>Edit</button>
+                                    <button
+                                        id="button-delete"
+                                        onClick={() => handleDeleteClick(lesson.id)}
+                                    >
+                                        Delete
+                                    </button>
                                 </div>
-                            ))
-                    ) : (
-                        <p>No lessons found.</p>
-                    )}
+                            </div>
+                        ))}
                 </div>
             )}
 
