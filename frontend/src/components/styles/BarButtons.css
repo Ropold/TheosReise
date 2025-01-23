@@ -246,6 +246,11 @@
 
 /* Dark Mode */
 @media (prefers-color-scheme: dark) {
+    .toggle-search-off {
+        background-color: #444444; /* Dunkler Hintergrund im Dark Mode */
+        color: #fff; /* Weißer Text im Dark Mode */
+    }
+
     .navbar {
         background-color: #242424;
     }
@@ -277,6 +282,7 @@
     .search-bar input:focus {
         border-color: #66b3ff;
     }
+
 
     .filter-buttons button {
         background-color: #555555;
