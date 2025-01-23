@@ -36,6 +36,15 @@ export default function EditLessons(props: Readonly<EditLessonsProps>) {
         e.preventDefault();
         if (!editData) return;
 
+        const isCountUnique = !props.lessons.some(
+            (lesson) => lesson.count === editData.count && lesson.id !== editData.id
+        );
+
+        if (!isCountUnique) {
+            alert("Count value must be unique. Please choose a different value.");
+            return;
+        }
+
         const data = new FormData();
         if (image) {
             data.append("image", image);
