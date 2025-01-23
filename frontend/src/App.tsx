@@ -69,6 +69,7 @@ export default function App() {
         axios.get("/api/users/me/details")
             .then((response) => {
                 setUserDetails(response.data);
+                //console.log("User details:", response.data);
             })
             .catch((error) => {
                 console.error(error);
@@ -118,7 +119,7 @@ export default function App() {
                 />}/>
                 <Route path="/theos-reise/:id" element={<Lesson />} />
                 <Route element={<ProtectedRoute user={user}/>}>
-                    <Route path="/add-lesson" element={<AddLesson user={user} handleSubmit={handleNewLessonSubmit} userDetails={userDetails}/>} />
+                    <Route path="/add-lesson" element={<AddLesson user={user} handleSubmit={handleNewLessonSubmit} userDetails={userDetails} lessons={lessons}/>} />
                     <Route path="/edit-lessons" element={<EditLessons user={user} lessons={lessons} setLessons={setLessons}/>} />
                     <Route path="/profile" element={<Profile userDetails={userDetails} />} />
                 </Route>

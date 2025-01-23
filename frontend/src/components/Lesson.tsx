@@ -3,6 +3,7 @@ import {LessonModel} from "./model/LessonModel.ts";
 import {useParams} from "react-router-dom";
 import axios from "axios";
 import "./styles/LessonCard.css";
+import {getCategoryDisplayName} from "../utils/GetCategoryDisyplayName.ts";
 
 const defaultLesson: LessonModel = {
     id: "",
@@ -24,7 +25,7 @@ export default function Lesson() {
         axios
             .get(`/api/theos-reise/${id}`)
             .then((response) => {
-                console.log(response.data);
+                //console.log(response.data);
                 setLesson(response.data);
             })
             .catch((error) => {
@@ -39,7 +40,7 @@ export default function Lesson() {
     return (
         <div className="lesson-details">
             <h2>Titel: {lesson.title}</h2>
-            <p><strong>Category:</strong>{lesson.category}</p>
+            <p><strong>Category: </strong>{getCategoryDisplayName(lesson.category)}</p>
             <p><strong>Description: </strong>{lesson.description}</p>
             <p><strong>Count: </strong>{lesson.count}</p>
             {lesson.imageUrl && (
