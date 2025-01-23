@@ -8,6 +8,7 @@ interface AddLessonProps {
     user: string;
     handleSubmit: (lesson: LessonModel) => void;
     userDetails: any;
+    lessons: LessonModel[];
 }
 
 export default function AddLesson(props: Readonly<AddLessonProps>) {
@@ -25,6 +26,13 @@ export default function AddLesson(props: Readonly<AddLessonProps>) {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        const isCountUnique = !props.lessons.some((lesson) => lesson.count === count);
+
+        if (!isCountUnique) {
+            alert("Count value must be unique. Please choose a different value.");
+            return;
+        }
+
         const data = new FormData();
 
         if (image) {
@@ -39,7 +47,7 @@ export default function AddLesson(props: Readonly<AddLessonProps>) {
             imageUrl: "",
         };
 
-        data.append("lessonModelDto", new Blob([JSON.stringify(lessonData)], {type: "application/json"}));
+        data.append("lessonModelDto", new Blob([JSON.stringify(lessonData)], { type: "application/json" }));
 
         console.log("lessonData:", lessonData);
 
