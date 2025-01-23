@@ -2,12 +2,13 @@ import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import {LessonModel} from "./model/LessonModel.ts";
+import {UserDetails} from "./model/UserDetails.ts";
 import "./styles/LessonCard.css";
 
 interface AddLessonProps {
     user: string;
     handleSubmit: (lesson: LessonModel) => void;
-    userDetails: any;
+    userDetails: UserDetails;
     lessons: LessonModel[];
 }
 

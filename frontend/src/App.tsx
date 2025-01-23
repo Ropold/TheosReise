@@ -69,6 +69,7 @@ export default function App() {
         axios.get("/api/users/me/details")
             .then((response) => {
                 setUserDetails(response.data);
+                console.log("User details:", response.data);
             })
             .catch((error) => {
                 console.error(error);

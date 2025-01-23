@@ -1,7 +1,8 @@
 import "./styles/Profile.css"
+import {UserDetails} from "./model/UserDetails.ts";
 
 type UserDetailsProps={
-    userDetails: any;
+    userDetails: UserDetails;
 }
 
 export default function Profile(props: Readonly<UserDetailsProps>) {
