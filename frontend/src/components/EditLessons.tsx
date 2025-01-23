@@ -45,7 +45,7 @@ export default function EditLessons(props: Readonly<EditLessonsProps>) {
             ...editData,
         };
 
-        data.append("lessonModelDto", new Blob([JSON.stringify(updatedLessonData)], { type: "application/json" }));
+        data.append("lessonModelDto", new Blob([JSON.stringify(updatedLessonData)], {type: "application/json"}));
 
         axios
             .put(`/api/theos-reise/${editData.id}`, data, {
@@ -56,7 +56,7 @@ export default function EditLessons(props: Readonly<EditLessonsProps>) {
             .then((response) => {
                 props.setLessons((prevLessons) =>
                     prevLessons.map((lesson) =>
-                        lesson.id === editData.id ? { ...lesson, ...response.data } : lesson
+                        lesson.id === editData.id ? {...lesson, ...response.data} : lesson
                     )
                 );
                 setIsEditing(false);
@@ -73,7 +73,7 @@ export default function EditLessons(props: Readonly<EditLessonsProps>) {
             .then(() => {
                 props.setLessons((prevLessons) =>
                     prevLessons.map((lesson) =>
-                        lesson.id === lessonId ? { ...lesson, isActive: !lesson.isActive } : lesson
+                        lesson.id === lessonId ? {...lesson, isActive: !lesson.isActive} : lesson
                     )
                 );
             })
@@ -127,7 +127,7 @@ export default function EditLessons(props: Readonly<EditLessonsProps>) {
                                 className="input-small"
                                 type="text"
                                 value={editData?.title || ""}
-                                onChange={(e) => setEditData({ ...editData!, title: e.target.value })}
+                                onChange={(e) => setEditData({...editData!, title: e.target.value})}
                             />
                         </label>
 
@@ -136,7 +136,7 @@ export default function EditLessons(props: Readonly<EditLessonsProps>) {
                             <textarea
                                 className="textarea-large"
                                 value={editData?.description || ""}
-                                onChange={(e) => setEditData({ ...editData!, description: e.target.value })}
+                                onChange={(e) => setEditData({...editData!, description: e.target.value})}
                             />
                         </label>
 
@@ -146,7 +146,7 @@ export default function EditLessons(props: Readonly<EditLessonsProps>) {
                                 className="input-small"
                                 type="number"
                                 value={editData?.count || ""}
-                                onChange={(e) => setEditData({ ...editData!, count: Number(e.target.value) })}
+                                onChange={(e) => setEditData({...editData!, count: Number(e.target.value)})}
                             />
                         </label>
 
@@ -156,7 +156,7 @@ export default function EditLessons(props: Readonly<EditLessonsProps>) {
                                 className="input-small"
                                 value={editData?.isActive ? "true" : "false"}
                                 onChange={(e) =>
-                                    setEditData({ ...editData!, isActive: e.target.value === "true" })
+                                    setEditData({...editData!, isActive: e.target.value === "true"})
                                 }
                             >
                                 <option value="true">Active</option>
@@ -166,8 +166,8 @@ export default function EditLessons(props: Readonly<EditLessonsProps>) {
 
                         <label>
                             Image:
-                            <input type="file" onChange={onFileChange} />
-                            {image && <img src={URL.createObjectURL(image)} className="lesson-card-image" />}
+                            <input type="file" onChange={onFileChange}/>
+                            {image && <img src={URL.createObjectURL(image)} className="lesson-card-image"/>}
                         </label>
 
                         <div className="button-group">
@@ -179,36 +179,39 @@ export default function EditLessons(props: Readonly<EditLessonsProps>) {
             ) : (
                 <div className="lesson-card-container">
                     {userLessons.length > 0 ? (
-                        userLessons.map((lesson) => (
-                            <div key={lesson.id}>
-                                <div className="lesson-card">
-                                    <div className={`lesson-card-text ${!lesson.imageUrl ? 'no-image' : ''}`}>
-                                        <h3>{lesson.title}</h3>
-                                        <p><strong>Category: </strong>{getCategoryDisplayName(lesson.category)}</p>
-                                        <p><strong>Count: </strong>{lesson.count}</p>
-                                    </div>
+                        userLessons
+                            .slice() // Erstelle eine Kopie des Arrays
+                            .sort((a, b) => a.count - b.count) // Sortiere die Lessons nach Count
+                            .map((lesson: LessonModel) => (
+                                <div key={lesson.id}>
+                                    <div className="lesson-card">
+                                        <div className={`lesson-card-text ${!lesson.imageUrl ? 'no-image' : ''}`}>
+                                            <h3>{lesson.title}</h3>
+                                            <p><strong>Category: </strong>{getCategoryDisplayName(lesson.category)}</p>
+                                            <p><strong>Count: </strong>{lesson.count}</p>
+                                        </div>
 
-                                    {lesson.imageUrl ? (
-                                        <img
-                                            src={lesson.imageUrl}
-                                            alt={lesson.title}
-                                            className="lesson-card-image"
-                                        />
-                                    ) : null}
+                                        {lesson.imageUrl ? (
+                                            <img
+                                                src={lesson.imageUrl}
+                                                alt={lesson.title}
+                                                className="lesson-card-image"
+                                            />
+                                        ) : null}
+                                    </div>
+                                    <div className="button-group">
+                                        <button
+                                            id={lesson.isActive ? "active-button" : "inactive-button"}
+                                            onClick={() => handleToggleActiveStatus(lesson.id)}
+                                        >
+                                            {lesson.isActive ? "Active" : "Offline"}
+                                        </button>
+                                        <button onClick={() => handleEditToggle(lesson.id)}>Edit</button>
+                                        <button id="button-delete" onClick={() => handleDeleteClick(lesson.id)}>Delete
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className="button-group">
-                                    <button
-                                        id={lesson.isActive ? "active-button" : "inactive-button"}
-                                        onClick={() => handleToggleActiveStatus(lesson.id)}
-                                    >
-                                        {lesson.isActive ? "Active" : "Offline"}
-                                    </button>
-                                    <button onClick={() => handleEditToggle(lesson.id)}>Edit</button>
-                                    <button id="button-delete" onClick={() => handleDeleteClick(lesson.id)}>Delete
-                                    </button>
-                                </div>
-                            </div>
-                        ))
+                            ))
                     ) : (
                         <p>No lessons found.</p>
                     )}
