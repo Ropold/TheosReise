@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { LessonModel } from "./model/LessonModel.ts";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import "./styles/LessonCard.css";
+import "./styles/BarButtons.css";
 import { getCategoryDisplayName } from "../utils/GetCategoryDisyplayName.ts";
 import { DefaultLesson } from "./model/DefaultLesson.ts";
 import Lesson1 from "./lesson-content/Lesson1.tsx";
 import Lesson2 from "./lesson-content/Lesson2.tsx";
 import Lesson3 from "./lesson-content/Lesson3.tsx";
-// Weitere Komponenten bei Bedarf importieren
 
 // Map der Komponenten basierend auf IDs
 const lessonComponents: Record<string, React.FC> = {
@@ -18,9 +18,14 @@ const lessonComponents: Record<string, React.FC> = {
     // Weitere Komponenten hinzufügen
 };
 
-export default function Lesson() {
+type LessonProps = {
+    activeLessons: LessonModel[];
+};
+
+export default function Lesson(props: Readonly<LessonProps>) {
     const [lesson, setLesson] = useState<LessonModel>(DefaultLesson);
     const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
 
     const fetchLessonDetails = () => {
         if (!id) return;
@@ -40,6 +45,14 @@ export default function Lesson() {
 
     // Dynamische Komponente auswählen basierend auf der ID
     const DynamicLessonComponent = lessonComponents[lesson.id] || null;
+
+    const handleNavigate = (newCount: number) => {
+        if (newCount < 1) return; // Kapitel 0 verhindern
+        const targetLesson = props.activeLessons.find((l) => l.count === newCount);
+        if (targetLesson) {
+            navigate(`/theos-reise/${targetLesson.id}`);
+        }
+    };
 
     return (
         <>
@@ -72,6 +85,28 @@ export default function Lesson() {
                 ) : (
                     <p>Keine zusätzliche Komponente für die ID: {lesson.id}</p>
                 )}
+            </div>
+            <div>
+                <h3>Gehe zu Kapitel: </h3>
+                <div className="button-group">
+                    <button
+                        onClick={() => handleNavigate(lesson.count - 1)}
+                        disabled={lesson.count <= 1} // Deaktivieren, wenn Kapitel 1 erreicht ist
+                    >
+                        {lesson.count - 1 > 0 ? lesson.count - 1 : "-"}
+                    </button>
+
+                    <button id="current-lesson-button">
+                        {lesson.count}
+                    </button>
+
+                    <button
+                        onClick={() => handleNavigate(lesson.count + 1)}
+                        disabled={lesson.count === props.activeLessons.length || !props.activeLessons.some(l => l.count === lesson.count + 1)} // Überprüfe, ob die nächste Lektion existiert
+                    >
+                        {props.activeLessons.some(l => l.count === lesson.count + 1) ? lesson.count + 1 : "-"}
+                    </button>
+                </div>
             </div>
         </>
     );

@@ -117,7 +117,7 @@ export default function App() {
                     currentPage={currentPage}
                     paginate={setCurrentPage}
                 />}/>
-                <Route path="/theos-reise/:id" element={<Lesson />} />
+                <Route path="/theos-reise/:id" element={<Lesson activeLessons={activeLessons}/>} />
                 <Route element={<ProtectedRoute user={user}/>}>
                     <Route path="/add-lesson" element={<AddLesson user={user} handleSubmit={handleNewLessonSubmit} userDetails={userDetails} lessons={lessons}/>} />
                     <Route path="/edit-lessons" element={<EditLessons user={user} lessons={lessons} setLessons={setLessons}/>} />
