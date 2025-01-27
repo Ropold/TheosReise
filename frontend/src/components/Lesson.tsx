@@ -95,19 +95,18 @@ export default function Lesson(props: Readonly<LessonProps>) {
                     >
                         {lesson.count - 1 > 0 ? lesson.count - 1 : "-"}
                     </button>
-                    <button
-                        id="current-lesson-button"
-                    >
+
+                    <button id="current-lesson-button">
                         {lesson.count}
                     </button>
+
                     <button
                         onClick={() => handleNavigate(lesson.count + 1)}
-                        disabled={lesson.count === props.activeLessons.length}
+                        disabled={lesson.count === props.activeLessons.length || !props.activeLessons.some(l => l.count === lesson.count + 1)} // Überprüfe, ob die nächste Lektion existiert
                     >
-                        {lesson.count + 1}
+                        {props.activeLessons.some(l => l.count === lesson.count + 1) ? lesson.count + 1 : "-"}
                     </button>
                 </div>
-
             </div>
         </>
     );
