@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { LessonModel } from "./model/LessonModel.ts";
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import "./styles/LessonCard.css";
+import "./styles/BarButtons.css"
 import { getCategoryDisplayName } from "../utils/GetCategoryDisyplayName.ts";
 import { DefaultLesson } from "./model/DefaultLesson.ts";
 import Lesson1 from "./lesson-content/Lesson1.tsx";
@@ -25,6 +26,7 @@ type LessonProps = {
 export default function Lesson(props: Readonly<LessonProps>) {
     const [lesson, setLesson] = useState<LessonModel>(DefaultLesson);
     const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
 
     const fetchLessonDetails = () => {
         if (!id) return;
@@ -44,6 +46,13 @@ export default function Lesson(props: Readonly<LessonProps>) {
 
     // Dynamische Komponente auswählen basierend auf der ID
     const DynamicLessonComponent = lessonComponents[lesson.id] || null;
+
+    const handleNavigate = (newCount: number) => {
+        const targetLesson = props.activeLessons.find((l) => l.count === newCount);
+        if (targetLesson) {
+            navigate(`/theos-reise/${targetLesson.id}`);
+        }
+    };
 
     return (
         <>
@@ -72,10 +81,25 @@ export default function Lesson(props: Readonly<LessonProps>) {
             <div>
                 {/* Dynamische Komponente rendern */}
                 {DynamicLessonComponent ? (
-                    <DynamicLessonComponent />
+                    <DynamicLessonComponent/>
                 ) : (
                     <p>Keine zusätzliche Komponente für die ID: {lesson.id}</p>
                 )}
+            </div>
+            <div className="navigation-buttons">
+                <button
+                    onClick={() => handleNavigate(lesson.count - 1)}
+                    disabled={lesson.count === 1}
+                >
+                    {lesson.count - 1}
+                </button>
+                <button disabled>{lesson.count}</button>
+                <button
+                    onClick={() => handleNavigate(lesson.count + 1)}
+                    disabled={lesson.count === props.activeLessons.length}
+                >
+                    {lesson.count + 1}
+                </button>
             </div>
         </>
     );
