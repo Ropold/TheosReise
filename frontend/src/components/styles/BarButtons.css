@@ -95,6 +95,9 @@
     background-color: #f0f0f0;
 }
 
+
+
+
 /* Filter Buttons */
 .filter-buttons {
     display: flex;
@@ -144,6 +147,19 @@
 
 .button-group button:hover {
     background-color: #007bff;
+}
+
+#current-lesson-button {
+    background-color: #999;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: default;  /* Zeigt an, dass der Button nicht klickbar ist */
+}
+
+#current-lesson-button:focus {
+    outline: none;
 }
 
 /* Delete-Button */
