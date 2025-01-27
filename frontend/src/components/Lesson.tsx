@@ -18,7 +18,11 @@ const lessonComponents: Record<string, React.FC> = {
     // Weitere Komponenten hinzufügen
 };
 
-export default function Lesson() {
+type LessonProps = {
+    activeLessons: LessonModel[];
+};
+
+export default function Lesson(props: Readonly<LessonProps>) {
     const [lesson, setLesson] = useState<LessonModel>(DefaultLesson);
     const { id } = useParams<{ id: string }>();
 
